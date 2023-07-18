@@ -8,6 +8,9 @@ export class TagEntity {
   @Column()
   name: string;
 
+  @Column()
+  quantity: number;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
