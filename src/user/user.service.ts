@@ -10,10 +10,21 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) { }
 
-  async createUser(createUserDto: CreateUserDto) {
+  async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
     const newUser = new UserEntity();
     Object.assign(newUser, createUserDto);
-    console.log('newUser', newUser);
     return await this.userRepository.save(newUser);
+  }
+  generateJwt(user: UserEntity): string {
+    return 'token';
+  }
+
+  buildUserResponse(user: UserEntity): any {
+    return {
+      user: {
+        ...user,
+        token: this.generateJwt(user),
+      }
+    }
   }
 }
