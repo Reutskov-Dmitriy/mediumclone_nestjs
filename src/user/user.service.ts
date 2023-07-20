@@ -3,6 +3,11 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { UserEntity } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { sign } from 'jsonwebtoken';
+import { JWT_SECRET } from '@app/config';
+import { UserResponseInterface } from './dto/userResponse.interface';
+import { UserType } from './dto/user.type';
+
 @Injectable()
 export class UserService {
   constructor(
@@ -16,10 +21,14 @@ export class UserService {
     return await this.userRepository.save(newUser);
   }
   generateJwt(user: UserEntity): string {
-    return 'token';
+    return sign({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    }, JWT_SECRET);
   }
 
-  buildUserResponse(user: UserEntity): any {
+  buildUserResponse(user: UserEntity): UserResponseInterface {
     return {
       user: {
         ...user,
