@@ -39,6 +39,10 @@ export class UserService {
     }, JWT_SECRET);
   }
 
+  findById(id: number): Promise<UserEntity> {
+    return this.userRepository.findOne({ where: { id } });
+  }
+
   buildUserResponse(user: UserEntity): UserResponseInterface {
     return {
       user: {
