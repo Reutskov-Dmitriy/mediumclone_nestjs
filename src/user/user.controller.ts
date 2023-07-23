@@ -5,6 +5,8 @@ import { UserResponseInterface } from './dto/userResponse.interface';
 import LoginUserDto from './dto/loginUser.dto';
 import { Request } from 'express';
 import { ExpressRequestInterface } from '@app/types/expressRequest.interface';
+import { User } from '@app/decorators/user.decorator';
+import { UserEntity } from './user.entity';
 
 @Controller()
 export class UserController {
@@ -28,10 +30,12 @@ export class UserController {
   }
 
   @Get('user')
-  async getCurrentUser(@Req() request: ExpressRequestInterface): Promise<UserResponseInterface> {
-    console.log('user', request.user);
-
-    return this.userService.buildUserResponse(request.user);
+  async getCurrentUser(
+    @User() user: UserEntity,
+    @User('id') currentUserId: number,
+  ): Promise<UserResponseInterface> {
+    console.log(currentUserId)
+    return this.userService.buildUserResponse(user);
   }
 
   @Get()
