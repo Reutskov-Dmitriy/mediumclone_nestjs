@@ -1,3 +1,4 @@
+import { UpdateUserDto } from './dto/updateUser.dto';
 import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UserEntity } from './user.entity';
@@ -43,14 +44,7 @@ export class UserService {
     return this.userRepository.findOne({ where: { id } });
   }
 
-  buildUserResponse(user: UserEntity): UserResponseInterface {
-    return {
-      user: {
-        ...user,
-        token: this.generateJwt(user),
-      }
-    }
-  }
+
 
   async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
     const userByEmail = await this.userRepository.findOne({
@@ -75,5 +69,20 @@ export class UserService {
 
     delete userByEmail.password;
     return userByEmail
+  }
+
+  async updateUser(userId: number, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+    const user = await this.findById(userId);
+    Object.assign(user, updateUserDto);
+    return await this.userRepository.save(user);
+  }
+
+  buildUserResponse(user: UserEntity): UserResponseInterface {
+    return {
+      user: {
+        ...user,
+        token: this.generateJwt(user),
+      }
+    }
   }
 }
