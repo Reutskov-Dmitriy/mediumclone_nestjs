@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ArticleEntity } from './article.entity';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { CreateArticleDto } from './dto/createArticle.dto';
 import { UserEntity } from '@app/user/user.entity';
 import { ArticleResponseInterface } from './dto/articleResponse.interface';
@@ -25,6 +25,22 @@ export class ArticleService {
     return await this.articleRepository.save(article);
   }
 
+  async findBySlug(slug: string): Promise<ArticleEntity> {
+    return await this.articleRepository.findOne({ where: { slug } });
+  }
+
+  async deleteArticle(slug: string, currentUserId: number): Promise<DeleteResult> {
+    const article = await this.findBySlug(slug)
+
+    if (!article) {
+      throw new HttpException('Article does not exist', HttpStatus.FORBIDDEN)
+    }
+    if (article.author.id !== currentUserId) {
+      throw new HttpException('You are not an author', HttpStatus.NOT_FOUND)
+    }
+    return await this.articleRepository.delete({ slug })
+  }
+
   buildArticleResponse(article: ArticleEntity): Promise<ArticleResponseInterface> {
     return Promise.resolve({ article });
   }
@@ -34,4 +50,6 @@ export class ArticleService {
       '-' + (Math.random() * Math.pow(36, 6) | 0).toString(36)
     );
   }
+
+
 }
