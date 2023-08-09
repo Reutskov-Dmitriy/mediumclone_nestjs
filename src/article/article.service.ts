@@ -26,10 +26,10 @@ export class ArticleService {
     queryBuilder.orderBy('articles.createdAt', 'DESC');
 
     const articlesCount = await queryBuilder.getCount();
-
-    if (query.tagList) {
-      queryBuilder.andWhere('articles.tagList LIKE tag', {
-        tag: `%${query.tagList}%`
+    console.log('query', query);
+    if (query.tag) {
+      queryBuilder.andWhere('articles.tagList LIKE :tag', {
+        tag: `%${query.tag}%`
       })
     }
 

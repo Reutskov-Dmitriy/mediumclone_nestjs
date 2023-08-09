@@ -21,6 +21,9 @@ export class ArticleController {
   }
 
   @Post()
+
+
+  @Post()
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
   async createArticle(
