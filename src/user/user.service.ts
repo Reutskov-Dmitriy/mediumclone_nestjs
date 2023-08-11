@@ -77,6 +77,10 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
+  async getAllUsers(): Promise<UserEntity[]> {
+    return await this.userRepository.find();
+  }
+
   buildUserResponse(user: UserEntity): UserResponseInterface {
     return {
       user: {
