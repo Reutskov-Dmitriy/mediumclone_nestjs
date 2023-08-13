@@ -1,7 +1,7 @@
 
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
-const config: PostgresConnectionOptions = {
+const ormconfig: PostgresConnectionOptions = {
   type: 'postgres',
   host: 'localhost',
   port: 5432,
@@ -15,4 +15,4 @@ const config: PostgresConnectionOptions = {
 };
 
 
-export default config;
+export default ormconfig;
