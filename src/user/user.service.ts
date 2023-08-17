@@ -19,14 +19,23 @@ export class UserService {
   ) { }
 
   async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
+    const errorResponse = {
+      errors: {}
+    }
     const userByEmail = await this.userRepository.findOne({
       where: { email: createUserDto.email }
     });
     const userByName = await this.userRepository.findOne({
       where: { name: createUserDto.name }
     });
+    if (userByEmail) {
+      errorResponse.errors['email'] = 'has already ben taken'
+    }
+    if (userByName) {
+      errorResponse.errors['name'] = 'has already ben taken'
+    }
     if (userByEmail || userByName) {
-      throw new HttpException('Email or name are taken', HttpStatus.UNPROCESSABLE_ENTITY)
+      throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY)
     }
     const newUser = new UserEntity();
     Object.assign(newUser, createUserDto);
@@ -47,6 +56,9 @@ export class UserService {
 
 
   async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
+    const errorResponse = {
+      errors: { 'email or password': 'is invalid' },
+    }
     const userByEmail = await this.userRepository.findOne({
       where:
       {
@@ -56,14 +68,14 @@ export class UserService {
     });
     if (!userByEmail) {
       throw new HttpException(
-        'Credentials are not valid',
+        errorResponse,
         HttpStatus.UNPROCESSABLE_ENTITY,)
     }
 
     const isPasswordCorrect = await compare(loginUserDto.password, userByEmail.password)
     if (!isPasswordCorrect) {
       throw new HttpException(
-        'Credentials are not valid',
+        errorResponse,
         HttpStatus.UNPROCESSABLE_ENTITY,)
     }
 
