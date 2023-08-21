@@ -42,7 +42,7 @@ export class ArticleService {
           name: query.author,
         }
       });
-      queryBuilder.andWhere('articles.aurhorId = :id', {
+      queryBuilder.andWhere('articles.authorId = :id', {
         id: author.id
       })
     }

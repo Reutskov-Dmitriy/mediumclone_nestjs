@@ -1,4 +1,5 @@
 import { ArticleEntity } from '@app/article/article.entity';
+import { ProductEntity } from '@app/product/product.entity';
 import { hash } from 'bcrypt';
 import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -34,4 +35,7 @@ export class UserEntity {
   @ManyToMany(() => ArticleEntity)
   @JoinTable()
   favorites: ArticleEntity[];
+
+  @OneToMany(() => ProductEntity, (product) => { product.author })
+  products: ProductEntity
 }
