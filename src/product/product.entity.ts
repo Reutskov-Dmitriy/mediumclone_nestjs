@@ -1,7 +1,8 @@
+import { CategoryEntity } from '@app/category/category.entity';
 import { UserEntity } from '@app/user/user.entity';
 import { BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'products' })
 export class ProductEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -24,6 +25,9 @@ export class ProductEntity {
   @Column()
   oldprice: number;
 
+  @Column()
+  image: string;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
@@ -36,4 +40,7 @@ export class ProductEntity {
   }
   @ManyToOne(() => UserEntity, (user) => user.products, { eager: true })
   author: UserEntity;
+
+  @ManyToOne(() => CategoryEntity, (category) => category.products, { eager: true })
+  category: CategoryEntity;
 }
