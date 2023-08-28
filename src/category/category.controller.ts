@@ -26,18 +26,18 @@ export class CategoryController {
     const category = await this.categoryService.createCategory(createCategoryDto);
     return this.categoryService.buildCategoryResponse(category)
   }
-  @Put(':categoryId')
+  @Put(':slug')
   @UseGuards(AuthGuard)
   @UsePipes(new BackendValidationPipe())
   async updateCategory(
-    @Param('categoryId') categoryId: number, @Body('category') createCategoryDto: CreateCategoryDto): Promise<CategoryResponseInterface> {
-    const category = await this.categoryService.updateCategory(categoryId, createCategoryDto);
+    @Param('slug') slug: string, @Body('category') createCategoryDto: CreateCategoryDto): Promise<CategoryResponseInterface> {
+    const category = await this.categoryService.updateCategory(slug, createCategoryDto);
     return this.categoryService.buildCategoryResponse(category)
   }
-  @Delete(':categoryId')
+  @Delete(':slug')
   @UseGuards(AuthGuard)
   async deleteCategoryById(
-    @Param('categoryId') categoryId: number): Promise<DeleteResult> {
-    return await this.categoryService.deleteCategory(categoryId);
+    @Param('slug') slug: string): Promise<DeleteResult> {
+    return await this.categoryService.deleteCategory(slug);
   }
 }

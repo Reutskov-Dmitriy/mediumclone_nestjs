@@ -29,10 +29,10 @@ export class UserService {
       where: { name: createUserDto.name }
     });
     if (userByEmail) {
-      errorResponse.errors['email'] = 'has already ben taken'
+      errorResponse.errors['email'] = 'has already been taken'
     }
     if (userByName) {
-      errorResponse.errors['name'] = 'has already ben taken'
+      errorResponse.errors['name'] = 'has already been taken'
     }
     if (userByEmail || userByName) {
       throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY)

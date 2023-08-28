@@ -6,6 +6,7 @@ import { CreateCategoryDto } from './dto/createCategory.dto';
 import { CategoryResponseInterface } from './types/categoryResponse.interface';
 import { CategoriesResponseInterface } from './types/categoriesResponse.interface';
 import { SharedService } from '@app/shared/shared.service';
+import { cursorTo } from 'readline';
 
 @Injectable()
 export class CategoryService {
@@ -16,6 +17,14 @@ export class CategoryService {
   ) { }
 
   async createCategory(createCategoryDto: CreateCategoryDto): Promise<CategoryEntity> {
+    const currentCategory = await this.categoryRepository.findOne({
+      where: {
+        title: createCategoryDto.title
+      }
+    });
+    if (currentCategory) {
+      throw new HttpException('Category has already been taken', HttpStatus.FORBIDDEN)
+    }
     const category = new CategoryEntity;
     Object.assign(category, createCategoryDto);
     category.slug = this.sharedService.getSlug(createCategoryDto.title);
@@ -26,30 +35,30 @@ export class CategoryService {
     return { categories: await this.categoryRepository.find() }
   }
 
-  async updateCategory(categoryId: number, createCategoryDto: CreateCategoryDto): Promise<CategoryEntity> {
+  async updateCategory(slug: string, createCategoryDto: CreateCategoryDto): Promise<CategoryEntity> {
     const category = await this.categoryRepository.findOne({
       where: {
-        id: categoryId
+        slug
       }
     });
     if (category) {
       Object.assign(category, createCategoryDto)
     } else {
-      throw new HttpException('Article does not exist', HttpStatus.FORBIDDEN)
+      throw new HttpException('Article does not exist', HttpStatus.NOT_FOUND)
     }
-    return await this.categoryRepository.save(category)
+    return await this.categoryRepository.save(category);
   }
 
-  async deleteCategory(categoryId: number): Promise<DeleteResult> {
+  async deleteCategory(slug: string): Promise<DeleteResult> {
     const category = await this.categoryRepository.findOne({
-      where: { id: categoryId }
+      where: { slug }
     });
 
     if (!category) {
       throw new HttpException('Article does not exist', HttpStatus.FORBIDDEN)
     }
 
-    return await this.categoryRepository.delete({ id: categoryId })
+    return await this.categoryRepository.delete({ slug })
   }
   buildCategoryResponse(category: CategoryEntity): CategoryResponseInterface {
     return { category };
