@@ -8,9 +8,10 @@ import { ArticleModule } from './article/article.module';
 import { ProfileModule } from './profile/profile.module';
 import { ProductModule } from './product/product.module';
 import { CategoryModule } from './category/category.module';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(ormconfig), TagModule, UserModule, ArticleModule, ProfileModule, ProductModule, CategoryModule],
+  imports: [TypeOrmModule.forRoot(ormconfig), TagModule, UserModule, ArticleModule, ProfileModule, ProductModule, CategoryModule, SharedModule],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
